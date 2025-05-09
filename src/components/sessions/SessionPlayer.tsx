@@ -76,7 +76,7 @@ const SessionPlayer: React.FC<SessionPlayerProps> = ({
         </div>
         
         {/* Right panel - Text */}
-        <div className="w-1/3 bg-joip-dark flex flex-col hidden lg:flex">
+        <div className="w-1/3 bg-[#121212] flex flex-col hidden lg:flex">
           <div className="flex-1 p-8 flex items-center justify-center">
             <div className="text-2xl font-medium text-white">{caption}</div>
           </div>
@@ -84,7 +84,7 @@ const SessionPlayer: React.FC<SessionPlayerProps> = ({
       </div>
       
       {/* Mobile text panel (shown only on small screens) */}
-      <div className="block lg:hidden bg-joip-dark p-4">
+      <div className="block lg:hidden bg-[#121212] p-4">
         <div className="text-xl font-medium text-white text-center">{caption}</div>
       </div>
     </div>
