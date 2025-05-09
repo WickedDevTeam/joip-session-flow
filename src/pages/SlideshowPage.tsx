@@ -68,7 +68,7 @@ const MediaBrowserPage = () => {
   return (
     <PageLayout>
       <div className="container py-8 px-4 sm:px-6">
-        <h1 className="text-3xl font-bold mb-8">Media Browser</h1>
+        <h1 className="section-header">Media Browser</h1>
         
         <MasonryGrid columns={4}>
           {items.map((item) => (

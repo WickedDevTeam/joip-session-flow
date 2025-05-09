@@ -2,7 +2,7 @@
 import React from 'react';
 import { Card, CardContent, CardFooter } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { Play, Star, StarOff, Share2, Pencil, Trash } from 'lucide-react';
+import { Play, Star, StarOff, Share2, Pencil, Trash2 } from 'lucide-react';
 import { Link } from 'react-router-dom';
 
 interface SessionCardProps {
@@ -33,7 +33,7 @@ const SessionCard: React.FC<SessionCardProps> = ({
   onShare
 }) => {
   return (
-    <Card className="overflow-hidden bg-joip-card border border-border/50">
+    <Card className="overflow-hidden bg-joip-card border-joip-border">
       <div className="relative">
         <img 
           src={thumbnail || '/placeholder.svg'} 
@@ -69,7 +69,7 @@ const SessionCard: React.FC<SessionCardProps> = ({
           {subreddits.map((subreddit, index) => (
             <span 
               key={index} 
-              className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-secondary text-secondary-foreground"
+              className="tag-pill"
             >
               r/{subreddit}
             </span>
@@ -86,24 +86,24 @@ const SessionCard: React.FC<SessionCardProps> = ({
         </div>
       </CardContent>
       
-      <CardFooter className="border-t border-border/40 bg-black/20 py-3 px-6 flex justify-between">
-        <Button asChild variant="ghost" size="icon">
+      <CardFooter className="border-t border-joip-border/40 bg-black/20 py-3 px-6 flex justify-between">
+        <Button asChild variant="ghost" size="icon" className="icon-button">
           <Link to={`/session/${id}`}>
             <Play className="h-5 w-5" />
           </Link>
         </Button>
         
         <div className="flex gap-1">
-          <Button asChild variant="ghost" size="icon">
+          <Button asChild variant="ghost" size="icon" className="icon-button">
             <Link to={`/sessions/edit/${id}`}>
               <Pencil className="h-4 w-4" />
             </Link>
           </Button>
-          <Button variant="ghost" size="icon" onClick={() => onShare(id)}>
+          <Button variant="ghost" size="icon" onClick={() => onShare(id)} className="icon-button">
             <Share2 className="h-4 w-4" />
           </Button>
-          <Button variant="ghost" size="icon" onClick={() => onDelete(id)}>
-            <Trash className="h-4 w-4" />
+          <Button variant="ghost" size="icon" onClick={() => onDelete(id)} className="icon-button">
+            <Trash2 className="h-4 w-4" />
           </Button>
         </div>
       </CardFooter>

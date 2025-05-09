@@ -97,12 +97,12 @@ const EditSessionPage = () => {
   return (
     <PageLayout title="Edit Session" showBackButton>
       <div className="container max-w-3xl py-8 px-4 sm:px-6">
-        <h1 className="text-3xl font-bold mb-8">Edit JOIP Session</h1>
+        <h1 className="text-3xl font-bold mb-2">Edit Session</h1>
         <p className="text-muted-foreground mb-8">
-          Update your JOIP Session settings, thumbnail, and AI prompt.
+          Update your session settings, thumbnail, and AI prompt.
         </p>
         
-        <div className="bg-joip-card p-6 rounded-lg border border-border/50">
+        <div className="bg-joip-card p-6 rounded-lg border border-joip-border">
           <SessionForm
             initialData={initialFormData}
             onSubmit={handleSubmit}

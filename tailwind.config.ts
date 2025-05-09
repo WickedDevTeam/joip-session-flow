@@ -27,9 +27,12 @@ export default {
 				foreground: 'hsl(var(--foreground))',
 				joip: {
 					yellow: '#F0B90B',
+					orange: '#F0980B',
 					dark: '#121212',
 					darker: '#0A0A0A',
 					card: '#1A1A1A',
+					cardHover: '#222222',
+					border: 'rgba(255,255,255,0.1)',
 				},
 				primary: {
 					DEFAULT: 'hsl(var(--primary))',

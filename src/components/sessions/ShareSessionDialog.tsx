@@ -65,11 +65,11 @@ const ShareSessionDialog: React.FC<ShareSessionDialogProps> = ({
   
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-[500px] bg-joip-card text-white border-border/50">
+      <DialogContent className="sm:max-w-[500px] bg-joip-card text-white border-joip-border">
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2 text-xl">
             <Share2 className="h-5 w-5" />
-            Share JOIP Session
+            Share Session
           </DialogTitle>
           <DialogDescription>
             Share your session "{session.title}" with others
@@ -93,7 +93,7 @@ const ShareSessionDialog: React.FC<ShareSessionDialogProps> = ({
                 {session.subreddits.map((subreddit, index) => (
                   <span
                     key={index}
-                    className="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-secondary text-secondary-foreground"
+                    className="tag-pill"
                   >
                     r/{subreddit}
                   </span>
@@ -113,7 +113,7 @@ const ShareSessionDialog: React.FC<ShareSessionDialogProps> = ({
             </div>
           </div>
           
-          <div className="flex items-center justify-between pt-2 border-t border-border/30">
+          <div className="flex items-center justify-between pt-2 border-t border-joip-border">
             <div className="space-y-0.5">
               <Label htmlFor="public-session" className="text-sm font-medium">Public Session</Label>
               <p className="text-xs text-muted-foreground">
@@ -132,13 +132,13 @@ const ShareSessionDialog: React.FC<ShareSessionDialogProps> = ({
               <Input 
                 value={shareableLink} 
                 readOnly 
-                className="bg-joip-dark border-border/50 text-sm"
+                className="bg-joip-dark border-joip-border text-sm"
               />
               <Button 
                 variant="outline" 
                 size="icon" 
                 onClick={copyLinkToClipboard}
-                className="shrink-0 bg-joip-dark hover:bg-joip-dark/80 border-border/50"
+                className="shrink-0 bg-joip-dark hover:bg-joip-dark/80 border-joip-border"
               >
                 <LinkIcon className="h-4 w-4" />
               </Button>
@@ -156,13 +156,13 @@ const ShareSessionDialog: React.FC<ShareSessionDialogProps> = ({
           <Button
             variant="outline"
             onClick={() => onOpenChange(false)}
-            className="bg-transparent border-border/50 hover:bg-joip-dark/50"
+            className="btn-secondary"
           >
             Cancel
           </Button>
           <Button
             onClick={onPlaySession}
-            className="bg-white text-black hover:bg-white/90"
+            className="btn-primary"
           >
             Play Session
           </Button>

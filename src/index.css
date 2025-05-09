@@ -87,3 +87,36 @@
     scrollbar-width: none;  /* Firefox */
   }
 }
+
+/* Custom button styling to match mockups */
+.btn-primary {
+  @apply bg-white text-black hover:bg-white/90 transition-colors;
+}
+
+.btn-secondary {
+  @apply bg-transparent border border-joip-border text-white hover:bg-white/5 transition-colors;
+}
+
+.card-content {
+  @apply bg-joip-card border border-joip-border rounded-lg overflow-hidden;
+}
+
+.tag-pill {
+  @apply inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-secondary text-secondary-foreground;
+}
+
+.section-header {
+  @apply text-3xl font-bold mb-2;
+}
+
+.section-description {
+  @apply text-muted-foreground mb-8;
+}
+
+.tab-active {
+  @apply bg-joip-yellow text-black;
+}
+
+.icon-button {
+  @apply p-2 rounded-full hover:bg-white/10 transition-colors;
+}

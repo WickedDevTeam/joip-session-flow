@@ -6,7 +6,7 @@ import SessionCard from '@/components/sessions/SessionCard';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Plus } from 'lucide-react';
+import { Plus, Search } from 'lucide-react';
 import { toast } from '@/components/ui/use-toast';
 import { JoipSession, getUserSessions, toggleSessionFavorite, deleteSession } from '@/services/session-service';
 import { useAuth } from '@/hooks/use-auth';
@@ -109,28 +109,29 @@ const SessionsPage = () => {
       <div className="container py-8 px-4 sm:px-6">
         <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-8 gap-4">
           <div>
-            <h1 className="text-3xl font-bold">Your JOIP Sessions</h1>
+            <h1 className="text-3xl font-bold section-header">Your Sessions</h1>
             <p className="text-muted-foreground">Create and manage your JOIP sessions</p>
           </div>
           <Button 
             onClick={() => navigate('/sessions/new')} 
-            className="shrink-0 bg-white text-black hover:bg-white/90"
+            className="btn-primary shrink-0"
           >
             <Plus className="mr-2 h-4 w-4" /> New Session
           </Button>
         </div>
         
-        <div className="mb-6">
+        <div className="relative mb-6">
+          <Search className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
           <Input
             placeholder="Search sessions..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            className="max-w-md bg-joip-dark border-border/50"
+            className="pl-9 max-w-md bg-joip-dark border-joip-border"
           />
         </div>
         
         <Tabs defaultValue="all" onValueChange={setActiveTab} className="mb-8">
-          <TabsList className="bg-joip-dark border border-border/50">
+          <TabsList className="bg-joip-dark border border-joip-border/50">
             <TabsTrigger value="all" className="data-[state=active]:bg-joip-yellow data-[state=active]:text-black">All Sessions</TabsTrigger>
             <TabsTrigger value="favorites" className="data-[state=active]:bg-joip-yellow data-[state=active]:text-black">Favorites</TabsTrigger>
             <TabsTrigger value="shared" disabled className="data-[state=active]:bg-joip-yellow data-[state=active]:text-black">Shared with me (0)</TabsTrigger>

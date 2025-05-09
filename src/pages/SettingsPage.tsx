@@ -22,9 +22,9 @@ const SettingsPage = () => {
   return (
     <PageLayout title="Settings">
       <div className="container max-w-3xl py-8 px-4 sm:px-6">
-        <h1 className="text-3xl font-bold mb-8">Settings</h1>
+        <h1 className="section-header">Settings</h1>
         
-        <div className="bg-joip-card p-6 rounded-lg border border-border/50 space-y-8">
+        <div className="card-content p-6 space-y-8">
           <div>
             <h2 className="text-xl font-bold mb-4">Content Preferences</h2>
             
@@ -94,11 +94,11 @@ const SettingsPage = () => {
           </div>
           
           <div className="flex justify-end pt-4">
-            <Button onClick={handleSaveSettings}>Save Settings</Button>
+            <Button onClick={handleSaveSettings} className="btn-primary">Save Settings</Button>
           </div>
         </div>
         
-        <div className="mt-8 bg-joip-card p-6 rounded-lg border border-border/50">
+        <div className="mt-8 card-content p-6">
           <h2 className="text-xl font-bold text-destructive mb-4">Danger Zone</h2>
           
           <div className="space-y-4">
