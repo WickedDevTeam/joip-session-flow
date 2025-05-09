@@ -6,10 +6,23 @@ import SessionForm from '@/components/sessions/SessionForm';
 import { toast } from '@/components/ui/use-toast';
 import { createSession, JoipSession } from '@/services/session-service';
 import { useAuth } from '@/hooks/use-auth';
+import { useEffect } from 'react';
 
 const CreateSessionPage = () => {
   const navigate = useNavigate();
   const { isAuthenticated } = useAuth();
+  
+  // Redirect to auth if not authenticated
+  useEffect(() => {
+    if (!isAuthenticated) {
+      toast({
+        title: 'Authentication required',
+        description: 'You need to be signed in to create a session.',
+        variant: 'destructive',
+      });
+      navigate('/auth');
+    }
+  }, [isAuthenticated, navigate]);
   
   const handleSubmit = async (data: any) => {
     if (!isAuthenticated) {

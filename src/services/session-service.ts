@@ -21,9 +21,19 @@ export interface JoipSession {
 // Create a new session
 export const createSession = async (sessionData: JoipSession): Promise<JoipSession | null> => {
   try {
+    // Get the current user
+    const { data: { user } } = await supabase.auth.getUser();
+    
+    if (!user) {
+      throw new Error('User must be authenticated to create a session');
+    }
+    
+    // Add user_id to the session data
+    const sessionWithUserId = { ...sessionData, user_id: user.id };
+    
     const { error, data } = await supabase
       .from('joip_sessions')
-      .insert(sessionData)
+      .insert(sessionWithUserId)
       .select()
       .single();
     
