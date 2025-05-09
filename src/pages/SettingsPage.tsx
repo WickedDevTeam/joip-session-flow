@@ -1,16 +1,28 @@
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import PageLayout from '@/components/layout/PageLayout';
 import { Switch } from '@/components/ui/switch';
 import { Label } from '@/components/ui/label';
 import { Button } from '@/components/ui/button';
 import { toast } from '@/components/ui/use-toast';
+import { useTheme } from '@/hooks/use-theme';
 
 const SettingsPage = () => {
   const [showNsfw, setShowNsfw] = useState(true);
   const [enableNotifications, setEnableNotifications] = useState(false);
   const [autoplayVideos, setAutoplayVideos] = useState(true);
-  const [darkMode, setDarkMode] = useState(true);
+  const { theme, setTheme } = useTheme();
+  const [darkMode, setDarkMode] = useState(theme === 'dark');
+  
+  // Update theme when darkMode state changes
+  useEffect(() => {
+    setTheme(darkMode ? 'dark' : 'light');
+  }, [darkMode, setTheme]);
+  
+  // Update darkMode state if theme changes elsewhere
+  useEffect(() => {
+    setDarkMode(theme === 'dark');
+  }, [theme]);
   
   const handleSaveSettings = () => {
     toast({

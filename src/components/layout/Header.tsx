@@ -13,12 +13,7 @@ import {
 import { useLocation, useNavigate } from 'react-router-dom';
 import { ArrowLeft, LogOut, Settings, Play, Image } from 'lucide-react';
 import { useAuth } from '@/hooks/use-auth';
-
-const JoipLogo = () => (
-  <Link to="/" className="flex items-center gap-1">
-    <div className="text-joip-yellow font-bold text-2xl">⚡Joip</div>
-  </Link>
-);
+import Logo from '@/components/ui/logo';
 
 interface HeaderProps {
   showBackButton?: boolean;
@@ -50,11 +45,11 @@ const Header: React.FC<HeaderProps> = ({ showBackButton = false, title }) => {
           )}
           {title ? (
             <>
-              <JoipLogo />
+              <Logo />
               <span className="ml-2 text-lg font-medium">{title}</span>
             </>
           ) : (
-            <JoipLogo />
+            <Logo />
           )}
         </div>
 
