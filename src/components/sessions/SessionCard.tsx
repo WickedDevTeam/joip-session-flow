@@ -1,10 +1,11 @@
 
 import React from 'react';
-import { Card } from '@/components/ui/card';
+import { Card, CardContent, CardFooter } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Play, Star, StarOff, Share2, Pencil, Trash2 } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { Badge } from '@/components/ui/badge';
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 
 interface SessionCardProps {
   id: string;
@@ -34,80 +35,115 @@ const SessionCard: React.FC<SessionCardProps> = ({
   onShare
 }) => {
   return (
-    <div className="bg-black/30 rounded-lg overflow-hidden">
+    <Card className="overflow-hidden bg-joip-card border-joip-border shadow-card hover:shadow-glow transition-all duration-300">
       <div className="relative">
         <img 
           src={thumbnail || '/placeholder.svg'} 
           alt={title}
           className="w-full h-52 object-cover"
           onError={(e) => {
+            // If image fails to load, replace with placeholder
             (e.target as HTMLImageElement).src = '/placeholder.svg';
           }}
         />
-        <Button 
-          variant="ghost" 
-          size="icon" 
-          className="absolute top-3 right-3 text-white hover:text-joip-accent bg-transparent hover:bg-transparent"
-          onClick={() => onToggleFavorite(id)}
-        >
-          {isFavorite ? 
-            <Star className="h-5 w-5 fill-white text-white" /> : 
-            <StarOff className="h-5 w-5" />
-          }
-        </Button>
+        <TooltipProvider>
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <Button 
+                variant="ghost" 
+                size="icon" 
+                className="absolute top-3 right-3 text-white hover:text-joip-accent hover:bg-black/30 rounded-full bg-black/20"
+                onClick={() => onToggleFavorite(id)}
+              >
+                {isFavorite ? 
+                  <Star className="h-5 w-5 fill-joip-accent text-joip-accent" /> : 
+                  <StarOff className="h-5 w-5" />
+                }
+              </Button>
+            </TooltipTrigger>
+            <TooltipContent>
+              {isFavorite ? 'Remove from favorites' : 'Add to favorites'}
+            </TooltipContent>
+          </Tooltip>
+        </TooltipProvider>
       </div>
       
-      <div className="p-4">
-        <h3 className="text-xl font-bold text-white mb-1">{title}</h3>
-        <p className="text-sm text-gray-400">Last updated {lastUpdated}</p>
+      <CardContent className="pt-5 p-6">
+        <div className="flex justify-between items-start">
+          <div>
+            <h3 className="text-xl font-bold text-white mb-1 line-clamp-1">{title}</h3>
+            <p className="text-sm text-muted-foreground">Last updated {lastUpdated}</p>
+          </div>
+        </div>
         
-        <div className="mt-3 flex flex-wrap gap-1.5">
+        <div className="mt-4 flex flex-wrap gap-1.5">
           {subreddits.map((subreddit, index) => (
             <Badge 
               key={index} 
-              variant="outline"
-              className="text-xs px-2 py-0.5 bg-black/20 hover:bg-black/40 border-gray-700"
+              variant="secondary"
+              className="text-xs py-0.5 px-2.5 bg-secondary/60 hover:bg-secondary/80"
             >
               r/{subreddit}
             </Badge>
           ))}
         </div>
         
-        <div className="mt-3 grid grid-cols-2 gap-2">
-          <div className="text-sm text-gray-400">
-            Interval: {interval}
+        <div className="mt-4 grid grid-cols-2 gap-2">
+          <div className="text-sm">
+            <span className="text-muted-foreground">Interval:</span> {interval}
           </div>
-          <div className="text-sm text-gray-400">
-            Transition: {transition}
+          <div className="text-sm">
+            <span className="text-muted-foreground">Transition:</span> {transition}
           </div>
         </div>
-      </div>
+      </CardContent>
       
-      <div className="px-4 py-3 flex justify-between">
-        <Button asChild variant="ghost" className="bg-black/30 hover:bg-black/50 text-white border-0 rounded-md">
+      <CardFooter className="border-t border-joip-border/40 bg-black/20 py-4 px-6 flex justify-between">
+        <Button asChild variant="primary" size="sm" className="bg-joip-accent hover:bg-joip-accent/90 text-white">
           <Link to={`/session/${id}`} className="flex items-center gap-1.5">
             <Play className="h-4 w-4" />
             <span>Play</span>
           </Link>
         </Button>
         
-        <div className="flex gap-1">
-          <Button asChild variant="ghost" size="icon" className="bg-transparent hover:bg-black/20 border-0">
-            <Link to={`/sessions/edit/${id}`}>
-              <Pencil className="h-4 w-4" />
-            </Link>
-          </Button>
+        <div className="flex gap-2">
+          <TooltipProvider>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <Button asChild variant="ghost" size="icon" className="hover:bg-white/10">
+                  <Link to={`/sessions/edit/${id}`}>
+                    <Pencil className="h-4 w-4" />
+                  </Link>
+                </Button>
+              </TooltipTrigger>
+              <TooltipContent>Edit</TooltipContent>
+            </Tooltip>
+          </TooltipProvider>
           
-          <Button variant="ghost" size="icon" onClick={() => onShare(id)} className="bg-transparent hover:bg-black/20 border-0">
-            <Share2 className="h-4 w-4" />
-          </Button>
+          <TooltipProvider>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <Button variant="ghost" size="icon" onClick={() => onShare(id)} className="hover:bg-white/10">
+                  <Share2 className="h-4 w-4" />
+                </Button>
+              </TooltipTrigger>
+              <TooltipContent>Share</TooltipContent>
+            </Tooltip>
+          </TooltipProvider>
           
-          <Button variant="ghost" size="icon" onClick={() => onDelete(id)} className="bg-transparent hover:bg-black/20 border-0">
-            <Trash2 className="h-4 w-4" />
-          </Button>
+          <TooltipProvider>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <Button variant="ghost" size="icon" onClick={() => onDelete(id)} className="hover:bg-white/10">
+                  <Trash2 className="h-4 w-4" />
+                </Button>
+              </TooltipTrigger>
+              <TooltipContent>Delete</TooltipContent>
+            </Tooltip>
+          </TooltipProvider>
         </div>
-      </div>
-    </div>
+      </CardFooter>
+    </Card>
   );
 };
 
