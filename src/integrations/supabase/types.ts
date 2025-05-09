@@ -9,7 +9,51 @@ export type Json =
 export type Database = {
   public: {
     Tables: {
-      [_ in never]: never
+      joip_sessions: {
+        Row: {
+          ai_prompt: string | null
+          created_at: string | null
+          id: string
+          interval: number
+          is_favorite: boolean
+          is_public: boolean
+          subreddits: string[]
+          thumbnail: string | null
+          title: string
+          transition: string
+          updated_at: string | null
+          user_id: string | null
+        }
+        Insert: {
+          ai_prompt?: string | null
+          created_at?: string | null
+          id?: string
+          interval?: number
+          is_favorite?: boolean
+          is_public?: boolean
+          subreddits: string[]
+          thumbnail?: string | null
+          title: string
+          transition?: string
+          updated_at?: string | null
+          user_id?: string | null
+        }
+        Update: {
+          ai_prompt?: string | null
+          created_at?: string | null
+          id?: string
+          interval?: number
+          is_favorite?: boolean
+          is_public?: boolean
+          subreddits?: string[]
+          thumbnail?: string | null
+          title?: string
+          transition?: string
+          updated_at?: string | null
+          user_id?: string | null
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never

@@ -30,14 +30,28 @@ const ShareSessionDialog: React.FC<ShareSessionDialogProps> = ({
   onPlaySession
 }) => {
   const [isPublic, setIsPublic] = useState(session.isPublic);
-  const [shareableLink, setShareableLink] = useState(isPublic ? `https://joip.app/shared/${session.id}` : '');
+  const [shareableLink, setShareableLink] = useState(isPublic ? `${window.location.origin}/shared/${session.id}` : '');
   
-  const handleTogglePublic = (checked: boolean) => {
+  const handleTogglePublic = async (checked: boolean) => {
     setIsPublic(checked);
+    
+    // In a real app, we'd update the database here
+    // For now, we just simulate the public status
+    
     if (checked) {
-      setShareableLink(`https://joip.app/shared/${session.id}`);
+      setShareableLink(`${window.location.origin}/shared/${session.id}`);
+      
+      toast({
+        title: 'Session made public',
+        description: 'This session can now be shared with others.',
+      });
     } else {
       setShareableLink('');
+      
+      toast({
+        title: 'Session made private',
+        description: 'This session is now private and cannot be shared.',
+      });
     }
   };
   
@@ -55,7 +69,7 @@ const ShareSessionDialog: React.FC<ShareSessionDialogProps> = ({
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2 text-xl">
             <Share2 className="h-5 w-5" />
-            Share Session
+            Share JOIP Session
           </DialogTitle>
           <DialogDescription>
             Share your session "{session.title}" with others

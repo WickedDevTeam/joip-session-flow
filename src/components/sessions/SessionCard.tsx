@@ -36,9 +36,13 @@ const SessionCard: React.FC<SessionCardProps> = ({
     <Card className="overflow-hidden bg-joip-card border border-border/50">
       <div className="relative">
         <img 
-          src={thumbnail} 
+          src={thumbnail || '/placeholder.svg'} 
           alt={title}
           className="w-full h-52 object-cover"
+          onError={(e) => {
+            // If image fails to load, replace with placeholder
+            (e.target as HTMLImageElement).src = '/placeholder.svg';
+          }}
         />
         <Button 
           variant="ghost" 

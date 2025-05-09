@@ -4,22 +4,48 @@ import { useNavigate } from 'react-router-dom';
 import PageLayout from '@/components/layout/PageLayout';
 import SessionForm from '@/components/sessions/SessionForm';
 import { toast } from '@/components/ui/use-toast';
+import { createSession, JoipSession } from '@/services/session-service';
+import { useAuth } from '@/hooks/use-auth';
 
 const CreateSessionPage = () => {
   const navigate = useNavigate();
+  const { isAuthenticated } = useAuth();
   
-  const handleSubmit = (data: any) => {
-    console.log('Form submitted with data:', data);
+  const handleSubmit = async (data: any) => {
+    if (!isAuthenticated) {
+      toast({
+        title: 'Authentication required',
+        description: 'You need to be signed in to create a session.',
+        variant: 'destructive',
+      });
+      navigate('/auth');
+      return;
+    }
     
-    // Here we would typically save the data to Supabase
-    // For demo, we'll just show a success toast and navigate
+    // Transform form data to match our database schema
+    const sessionData: JoipSession = {
+      title: data.title,
+      thumbnail: data.thumbnail,
+      // Convert comma-separated subreddits string to array
+      subreddits: data.subreddits.split(',').map((s: string) => s.trim().replace(/^r\//, '')),
+      interval: Number(data.interval),
+      transition: data.transition,
+      ai_prompt: data.aiPrompt,
+      is_favorite: data.isFavorite,
+      is_public: data.isPublic,
+    };
     
-    toast({
-      title: 'Session created',
-      description: `"${data.title}" has been created successfully.`,
-    });
+    // Save to database
+    const newSession = await createSession(sessionData);
     
-    navigate('/sessions');
+    if (newSession) {
+      toast({
+        title: 'Session created',
+        description: `"${data.title}" has been created successfully.`,
+      });
+      
+      navigate('/sessions');
+    }
   };
   
   const handleCancel = () => {
@@ -29,7 +55,7 @@ const CreateSessionPage = () => {
   return (
     <PageLayout title="Create Session" showBackButton>
       <div className="container max-w-3xl py-8 px-4 sm:px-6">
-        <h1 className="text-3xl font-bold mb-8">Create Session</h1>
+        <h1 className="text-3xl font-bold mb-8">Create JOIP Session</h1>
         <p className="text-muted-foreground mb-8">
           Create a new JOIP Session with your preferred settings and AI prompt.
         </p>

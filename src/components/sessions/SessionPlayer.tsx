@@ -1,7 +1,6 @@
 
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { Button } from '@/components/ui/button';
-import { Play, Pause, History } from 'lucide-react';
 import { 
   ResizablePanelGroup,
   ResizablePanel,
@@ -15,7 +14,17 @@ interface SessionPlayerProps {
   interval: number; // in seconds
   transition: string;
   aiPrompt: string;
+  isPaused?: boolean;
 }
+
+// Placeholder captions for demo
+const mockCaptions = [
+  "The more you edge, the prettier I get. Stroke until you're so stupid...",
+  "Keep going, I know you can feel it building up. Don't stop now...",
+  "Look at me while you do it. Focus on my eyes, my lips...",
+  "Imagine how good it would feel to let go. But you can't. Not yet...",
+  "Slow down. I want you to last longer. Much longer...",
+];
 
 const SessionPlayer: React.FC<SessionPlayerProps> = ({
   id,
@@ -23,50 +32,99 @@ const SessionPlayer: React.FC<SessionPlayerProps> = ({
   images,
   interval,
   transition,
-  aiPrompt
+  aiPrompt,
+  isPaused = false
 }) => {
   const [currentIndex, setCurrentIndex] = useState(0);
-  const [isPaused, setIsPaused] = useState(false);
   const [caption, setCaption] = useState('');
+  const [imageLoaded, setImageLoaded] = useState(true);
+  const nextImageRef = useRef<HTMLImageElement>(null);
+  const timerRef = useRef<NodeJS.Timeout | null>(null);
   
-  // Mock captions for demo purposes
-  const mockCaptions = [
-    "The more you edge, the prettier I get. Stroke until you're so stupid...",
-    "Keep going, I know you can feel it building up. Don't stop now...",
-    "Look at me while you do it. Focus on my eyes, my lips...",
-    "Imagine how good it would feel to let go. But you can't. Not yet...",
-    "Slow down. I want you to last longer. Much longer...",
-  ];
+  // Preload next image
+  const preloadNextImage = useCallback(() => {
+    const nextIndex = (currentIndex + 1) % images.length;
+    if (nextImageRef.current) {
+      nextImageRef.current.src = images[nextIndex];
+    }
+  }, [currentIndex, images]);
   
+  // Generate caption for current image
+  const generateCaption = useCallback(() => {
+    // In a real implementation, this would use an AI API based on aiPrompt
+    // For now, we'll use the mock captions
+    setCaption(mockCaptions[currentIndex % mockCaptions.length]);
+  }, [currentIndex, aiPrompt]);
+  
+  // Advance to next slide
   const advanceSlide = useCallback(() => {
     if (currentIndex < images.length - 1) {
       setCurrentIndex(prev => prev + 1);
-      setCaption(mockCaptions[currentIndex % mockCaptions.length]);
     } else {
       // Loop back to the first image
       setCurrentIndex(0);
-      setCaption(mockCaptions[0]);
     }
-  }, [currentIndex, images.length, mockCaptions]);
-  
-  useEffect(() => {
-    if (isPaused) return;
     
-    const timer = setTimeout(() => {
+    setImageLoaded(false);
+    preloadNextImage();
+  }, [currentIndex, images.length, preloadNextImage]);
+  
+  // Handle image load event
+  const handleImageLoad = () => {
+    setImageLoaded(true);
+    generateCaption();
+  };
+  
+  // Set up interval timer for auto-advance
+  useEffect(() => {
+    if (isPaused || !imageLoaded || images.length === 0) return;
+    
+    // Clear any existing timer
+    if (timerRef.current) {
+      clearTimeout(timerRef.current);
+    }
+    
+    timerRef.current = setTimeout(() => {
       advanceSlide();
     }, interval * 1000);
     
-    return () => clearTimeout(timer);
-  }, [currentIndex, interval, isPaused, advanceSlide]);
+    // Cleanup timer on unmount or when dependencies change
+    return () => {
+      if (timerRef.current) {
+        clearTimeout(timerRef.current);
+      }
+    };
+  }, [isPaused, imageLoaded, interval, advanceSlide, images.length]);
   
-  // Set initial caption
+  // Initialize first caption and preload next image
   useEffect(() => {
-    setCaption(mockCaptions[0]);
-  }, []);
+    if (images.length > 0) {
+      generateCaption();
+      preloadNextImage();
+    }
+  }, [images, generateCaption, preloadNextImage]);
   
-  const togglePause = () => {
-    setIsPaused(prev => !prev);
+  // Handle transition style
+  const getTransitionStyle = () => {
+    switch (transition) {
+      case 'fade':
+        return 'transition-opacity duration-500';
+      case 'slide':
+        return 'transition-transform duration-500';
+      case 'zoom':
+        return 'transition-transform duration-500 transform hover:scale-105';
+      default:
+        return '';
+    }
   };
+  
+  if (images.length === 0) {
+    return (
+      <div className="flex items-center justify-center h-full">
+        <p className="text-xl text-white">No images found for this session.</p>
+      </div>
+    );
+  }
   
   return (
     <div className="flex flex-col h-[calc(100vh-3.5rem)]">
@@ -78,10 +136,20 @@ const SessionPlayer: React.FC<SessionPlayerProps> = ({
         {/* Left panel - Image */}
         <ResizablePanel defaultSize={65} minSize={30} className="bg-black">
           <div className="h-full w-full relative">
+            {/* Current visible image */}
             <img 
               src={images[currentIndex]} 
               alt={`Session media ${currentIndex + 1}`}
-              className="h-full w-full object-contain"
+              className={`h-full w-full object-contain ${getTransitionStyle()} ${!imageLoaded ? 'opacity-0' : 'opacity-100'}`}
+              onLoad={handleImageLoad}
+            />
+            
+            {/* Preload next image */}
+            <img 
+              ref={nextImageRef}
+              src={images[(currentIndex + 1) % images.length]} 
+              alt="Preload next"
+              className="hidden"
             />
           </div>
         </ResizablePanel>

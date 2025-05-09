@@ -4,47 +4,54 @@ import { useNavigate, useParams } from 'react-router-dom';
 import PageLayout from '@/components/layout/PageLayout';
 import SessionForm from '@/components/sessions/SessionForm';
 import { toast } from '@/components/ui/use-toast';
-
-// Mock data for demo
-const mockSession = {
-  title: 'Brett Cooper',
-  thumbnail: 'https://picsum.photos/id/237/400/500',
-  subreddits: 'BrettCooperSFW, BrettCooper',
-  interval: 10,
-  transition: 'fade',
-  aiPrompt: 'You are a witty commentator for a Joip AI slideshow. Given an image or post from Reddit, provide a short, insightful, and sometimes humorous caption. Keep it concise (2-3 sentences maximum) and engaging.',
-  isFavorite: true,
-  isPublic: false
-};
+import { getSessionById, updateSession, JoipSession } from '@/services/session-service';
 
 const EditSessionPage = () => {
   const navigate = useNavigate();
   const { id } = useParams<{ id: string }>();
-  const [session, setSession] = useState<any>(null);
+  const [session, setSession] = useState<JoipSession | null>(null);
   const [loading, setLoading] = useState(true);
   
   useEffect(() => {
-    // Simulate API call to fetch session data
-    setLoading(true);
-    
-    setTimeout(() => {
-      // In a real app, we would fetch this from Supabase
-      setSession(mockSession);
+    const fetchSession = async () => {
+      if (!id) return;
+      
+      setLoading(true);
+      const sessionData = await getSessionById(id);
+      setSession(sessionData);
       setLoading(false);
-    }, 500);
+    };
+    
+    fetchSession();
   }, [id]);
   
-  const handleSubmit = (data: any) => {
-    console.log('Form submitted with updated data:', data);
+  const handleSubmit = async (data: any) => {
+    if (!id) return;
     
-    // Here we would typically update the data in Supabase
+    // Transform form data to match our database schema
+    const sessionData: Partial<JoipSession> = {
+      title: data.title,
+      thumbnail: data.thumbnail,
+      // Convert comma-separated subreddits string to array
+      subreddits: data.subreddits.split(',').map((s: string) => s.trim().replace(/^r\//, '')),
+      interval: Number(data.interval),
+      transition: data.transition,
+      ai_prompt: data.aiPrompt,
+      is_favorite: data.isFavorite,
+      is_public: data.isPublic,
+    };
     
-    toast({
-      title: 'Session updated',
-      description: `"${data.title}" has been updated successfully.`,
-    });
+    // Update in database
+    const updatedSession = await updateSession(id, sessionData);
     
-    navigate('/sessions');
+    if (updatedSession) {
+      toast({
+        title: 'Session updated',
+        description: `"${data.title}" has been updated successfully.`,
+      });
+      
+      navigate('/sessions');
+    }
   };
   
   const handleCancel = () => {
@@ -75,17 +82,29 @@ const EditSessionPage = () => {
     );
   }
   
+  // Transform session data to format expected by the form
+  const initialFormData = {
+    title: session.title,
+    thumbnail: session.thumbnail || '',
+    subreddits: session.subreddits.join(', '),
+    interval: session.interval,
+    transition: session.transition,
+    aiPrompt: session.ai_prompt || '',
+    isFavorite: session.is_favorite,
+    isPublic: session.is_public
+  };
+  
   return (
     <PageLayout title="Edit Session" showBackButton>
       <div className="container max-w-3xl py-8 px-4 sm:px-6">
-        <h1 className="text-3xl font-bold mb-8">Edit Session</h1>
+        <h1 className="text-3xl font-bold mb-8">Edit JOIP Session</h1>
         <p className="text-muted-foreground mb-8">
           Update your JOIP Session settings, thumbnail, and AI prompt.
         </p>
         
         <div className="bg-joip-card p-6 rounded-lg border border-border/50">
           <SessionForm
-            initialData={session}
+            initialData={initialFormData}
             onSubmit={handleSubmit}
             onCancel={handleCancel}
           />

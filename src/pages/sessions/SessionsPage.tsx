@@ -1,5 +1,5 @@
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import PageLayout from '@/components/layout/PageLayout';
 import SessionCard from '@/components/sessions/SessionCard';
@@ -8,72 +8,80 @@ import { Input } from '@/components/ui/input';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Plus } from 'lucide-react';
 import { toast } from '@/components/ui/use-toast';
-
-// Mock data for demo
-const mockSessions = [
-  {
-    id: '1',
-    title: 'Brett Cooper',
-    thumbnail: 'https://picsum.photos/id/237/400/500',
-    isFavorite: false,
-    lastUpdated: 'May 5, 2023',
-    subreddits: ['BrettCooperSFW', 'BrettCooper'],
-    interval: '10s',
-    transition: 'fade'
-  },
-  {
-    id: '2',
-    title: 'Selena',
-    thumbnail: 'https://picsum.photos/id/238/400/400',
-    isFavorite: true,
-    lastUpdated: 'May 5, 2023',
-    subreddits: ['SelenaGomezLust', 'SelenaGomezHot', 'SelenaGomez'],
-    interval: '6s',
-    transition: 'fade'
-  }
-];
+import { JoipSession, getUserSessions, toggleSessionFavorite, deleteSession } from '@/services/session-service';
+import { useAuth } from '@/hooks/use-auth';
+import ShareSessionDialog from '@/components/sessions/ShareSessionDialog';
 
 const SessionsPage = () => {
   const navigate = useNavigate();
-  const [sessions, setSessions] = useState(mockSessions);
+  const { isAuthenticated } = useAuth();
+  const [sessions, setSessions] = useState<JoipSession[]>([]);
+  const [loading, setLoading] = useState(true);
   const [activeTab, setActiveTab] = useState('all');
   const [searchQuery, setSearchQuery] = useState('');
+  const [shareDialogOpen, setShareDialogOpen] = useState(false);
+  const [selectedSession, setSelectedSession] = useState<JoipSession | null>(null);
+  
+  // Fetch sessions on page load
+  useEffect(() => {
+    const fetchSessions = async () => {
+      if (!isAuthenticated) return;
+      
+      setLoading(true);
+      const data = await getUserSessions();
+      setSessions(data);
+      setLoading(false);
+    };
+    
+    fetchSessions();
+  }, [isAuthenticated]);
   
   const filteredSessions = sessions.filter(session => {
     // Filter by search query
-    const matchesQuery = session.title.toLowerCase().includes(searchQuery.toLowerCase()) || 
-                         session.subreddits.some(s => s.toLowerCase().includes(searchQuery.toLowerCase()));
+    const matchesQuery = 
+      session.title.toLowerCase().includes(searchQuery.toLowerCase()) || 
+      session.subreddits.some(s => s.toLowerCase().includes(searchQuery.toLowerCase()));
     
     // Filter by tab
     const matchesTab = 
       activeTab === 'all' || 
-      (activeTab === 'favorites' && session.isFavorite);
+      (activeTab === 'favorites' && session.is_favorite);
     
     return matchesQuery && matchesTab;
   });
   
-  const handleToggleFavorite = (id: string) => {
-    setSessions(prevSessions => 
-      prevSessions.map(session => 
-        session.id === id 
-          ? { ...session, isFavorite: !session.isFavorite } 
-          : session
-      )
-    );
-    
+  const handleToggleFavorite = async (id: string) => {
     const session = sessions.find(s => s.id === id);
-    if (session) {
+    if (!session) return;
+    
+    const newFavoriteStatus = !session.is_favorite;
+    const success = await toggleSessionFavorite(id, newFavoriteStatus);
+    
+    if (success) {
+      setSessions(prevSessions => 
+        prevSessions.map(session => 
+          session.id === id 
+            ? { ...session, is_favorite: newFavoriteStatus } 
+            : session
+        )
+      );
+      
       toast({
-        title: session.isFavorite ? 'Removed from favorites' : 'Added to favorites',
-        description: `"${session.title}" has been ${session.isFavorite ? 'removed from' : 'added to'} your favorites.`,
+        title: newFavoriteStatus ? 'Added to favorites' : 'Removed from favorites',
+        description: `"${session.title}" has been ${newFavoriteStatus ? 'added to' : 'removed from'} your favorites.`,
       });
     }
   };
   
-  const handleDelete = (id: string) => {
+  const handleDelete = async (id: string) => {
     const session = sessions.find(s => s.id === id);
-    if (session) {
+    if (!session) return;
+    
+    const success = await deleteSession(id);
+    
+    if (success) {
       setSessions(prevSessions => prevSessions.filter(s => s.id !== id));
+      
       toast({
         title: 'Session deleted',
         description: `"${session.title}" has been deleted.`,
@@ -82,10 +90,18 @@ const SessionsPage = () => {
   };
   
   const handleShare = (id: string) => {
-    toast({
-      title: 'Share functionality',
-      description: 'Sharing feature will be implemented in the future.',
-    });
+    const session = sessions.find(s => s.id === id);
+    if (!session) return;
+    
+    setSelectedSession(session);
+    setShareDialogOpen(true);
+  };
+  
+  const handlePlaySession = () => {
+    if (!selectedSession?.id) return;
+    
+    navigate(`/session/${selectedSession.id}`);
+    setShareDialogOpen(false);
   };
   
   return (
@@ -93,10 +109,13 @@ const SessionsPage = () => {
       <div className="container py-8 px-4 sm:px-6">
         <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-8 gap-4">
           <div>
-            <h1 className="text-3xl font-bold">Your Sessions</h1>
+            <h1 className="text-3xl font-bold">Your JOIP Sessions</h1>
             <p className="text-muted-foreground">Create and manage your JOIP sessions</p>
           </div>
-          <Button onClick={() => navigate('/sessions/new')} className="shrink-0 bg-white text-black hover:bg-white/90">
+          <Button 
+            onClick={() => navigate('/sessions/new')} 
+            className="shrink-0 bg-white text-black hover:bg-white/90"
+          >
             <Plus className="mr-2 h-4 w-4" /> New Session
           </Button>
         </div>
@@ -118,46 +137,88 @@ const SessionsPage = () => {
           </TabsList>
           
           <TabsContent value="all" className="mt-6">
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {filteredSessions.length > 0 ? (
-                filteredSessions.map(session => (
-                  <SessionCard
-                    key={session.id}
-                    {...session}
-                    onToggleFavorite={handleToggleFavorite}
-                    onDelete={handleDelete}
-                    onShare={handleShare}
-                  />
-                ))
-              ) : (
-                <div className="col-span-full text-center py-12">
-                  <p className="text-muted-foreground">No sessions found. Create your first session!</p>
-                </div>
-              )}
-            </div>
+            {loading ? (
+              <div className="text-center py-12">
+                <p className="text-muted-foreground">Loading sessions...</p>
+              </div>
+            ) : (
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                {filteredSessions.length > 0 ? (
+                  filteredSessions.map(session => (
+                    <SessionCard
+                      key={session.id}
+                      id={session.id || ''}
+                      title={session.title}
+                      thumbnail={session.thumbnail || '/placeholder.svg'}
+                      isFavorite={session.is_favorite}
+                      lastUpdated={new Date(session.updated_at || Date.now()).toLocaleDateString()}
+                      subreddits={session.subreddits}
+                      interval={`${session.interval}s`}
+                      transition={session.transition}
+                      onToggleFavorite={handleToggleFavorite}
+                      onDelete={handleDelete}
+                      onShare={handleShare}
+                    />
+                  ))
+                ) : (
+                  <div className="col-span-full text-center py-12">
+                    <p className="text-muted-foreground">No sessions found. Create your first session!</p>
+                  </div>
+                )}
+              </div>
+            )}
           </TabsContent>
           
           <TabsContent value="favorites" className="mt-6">
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {filteredSessions.length > 0 ? (
-                filteredSessions.map(session => (
-                  <SessionCard
-                    key={session.id}
-                    {...session}
-                    onToggleFavorite={handleToggleFavorite}
-                    onDelete={handleDelete}
-                    onShare={handleShare}
-                  />
-                ))
-              ) : (
-                <div className="col-span-full text-center py-12">
-                  <p className="text-muted-foreground">No favorite sessions found.</p>
-                </div>
-              )}
-            </div>
+            {loading ? (
+              <div className="text-center py-12">
+                <p className="text-muted-foreground">Loading sessions...</p>
+              </div>
+            ) : (
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                {filteredSessions.length > 0 ? (
+                  filteredSessions.map(session => (
+                    <SessionCard
+                      key={session.id}
+                      id={session.id || ''}
+                      title={session.title}
+                      thumbnail={session.thumbnail || '/placeholder.svg'}
+                      isFavorite={session.is_favorite}
+                      lastUpdated={new Date(session.updated_at || Date.now()).toLocaleDateString()}
+                      subreddits={session.subreddits}
+                      interval={`${session.interval}s`}
+                      transition={session.transition}
+                      onToggleFavorite={handleToggleFavorite}
+                      onDelete={handleDelete}
+                      onShare={handleShare}
+                    />
+                  ))
+                ) : (
+                  <div className="col-span-full text-center py-12">
+                    <p className="text-muted-foreground">No favorite sessions found.</p>
+                  </div>
+                )}
+              </div>
+            )}
           </TabsContent>
         </Tabs>
       </div>
+      
+      {selectedSession && (
+        <ShareSessionDialog
+          open={shareDialogOpen}
+          onOpenChange={setShareDialogOpen}
+          session={{
+            id: selectedSession.id || '',
+            title: selectedSession.title,
+            subreddits: selectedSession.subreddits,
+            interval: `${selectedSession.interval}s`,
+            transition: selectedSession.transition,
+            isPublic: selectedSession.is_public
+          }}
+          onPlaySession={handlePlaySession}
+        />
+      )}
     </PageLayout>
   );
 };
