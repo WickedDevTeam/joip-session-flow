@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import PageLayout from '@/components/layout/PageLayout';
@@ -97,16 +96,9 @@ const SessionsPage = () => {
     setShareDialogOpen(true);
   };
   
-  const handlePlaySession = () => {
-    if (!selectedSession?.id) return;
-    
-    navigate(`/session/${selectedSession.id}`);
-    setShareDialogOpen(false);
-  };
-  
   return (
     <PageLayout>
-      <div className="container py-8 px-4 sm:px-6">
+      <div className="container py-10 px-4 sm:px-6">
         <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-8 gap-4">
           <div>
             <h1 className="text-3xl font-bold section-header">Your Sessions</h1>
@@ -114,7 +106,7 @@ const SessionsPage = () => {
           </div>
           <Button 
             onClick={() => navigate('/sessions/new')} 
-            className="btn-primary shrink-0"
+            className="bg-joip-accent hover:bg-joip-accent/90 text-white shrink-0 shadow-sm hover:shadow-glow transition-all"
           >
             <Plus className="mr-2 h-4 w-4" /> New Session
           </Button>
@@ -126,20 +118,21 @@ const SessionsPage = () => {
             placeholder="Search sessions..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            className="pl-9 max-w-md bg-joip-dark border-joip-border"
+            className="pl-9 max-w-md bg-joip-dark border-joip-border rounded-lg"
           />
         </div>
         
         <Tabs defaultValue="all" onValueChange={setActiveTab} className="mb-8">
-          <TabsList className="bg-joip-dark border border-joip-border/50">
-            <TabsTrigger value="all" className="data-[state=active]:bg-joip-yellow data-[state=active]:text-black">All Sessions</TabsTrigger>
-            <TabsTrigger value="favorites" className="data-[state=active]:bg-joip-yellow data-[state=active]:text-black">Favorites</TabsTrigger>
-            <TabsTrigger value="shared" disabled className="data-[state=active]:bg-joip-yellow data-[state=active]:text-black">Shared with me (0)</TabsTrigger>
+          <TabsList className="bg-joip-dark border border-joip-border/50 p-1 rounded-full">
+            <TabsTrigger value="all" className="rounded-full px-4 data-[state=active]:bg-joip-accent data-[state=active]:text-white">All Sessions</TabsTrigger>
+            <TabsTrigger value="favorites" className="rounded-full px-4 data-[state=active]:bg-joip-accent data-[state=active]:text-white">Favorites</TabsTrigger>
+            <TabsTrigger value="shared" disabled className="rounded-full px-4 data-[state=active]:bg-joip-accent data-[state=active]:text-white">Shared with me (0)</TabsTrigger>
           </TabsList>
           
-          <TabsContent value="all" className="mt-6">
+          <TabsContent value="all" className="mt-8">
             {loading ? (
               <div className="text-center py-12">
+                <div className="loading-spinner mx-auto mb-3"></div>
                 <p className="text-muted-foreground">Loading sessions...</p>
               </div>
             ) : (
@@ -162,17 +155,24 @@ const SessionsPage = () => {
                     />
                   ))
                 ) : (
-                  <div className="col-span-full text-center py-12">
+                  <div className="col-span-full text-center py-12 bg-joip-card/50 rounded-lg border border-joip-border">
                     <p className="text-muted-foreground">No sessions found. Create your first session!</p>
+                    <Button 
+                      onClick={() => navigate('/sessions/new')} 
+                      className="bg-joip-accent hover:bg-joip-accent/90 text-white mt-4"
+                    >
+                      <Plus className="mr-2 h-4 w-4" /> New Session
+                    </Button>
                   </div>
                 )}
               </div>
             )}
           </TabsContent>
           
-          <TabsContent value="favorites" className="mt-6">
+          <TabsContent value="favorites" className="mt-8">
             {loading ? (
               <div className="text-center py-12">
+                <div className="loading-spinner mx-auto mb-3"></div>
                 <p className="text-muted-foreground">Loading sessions...</p>
               </div>
             ) : (
@@ -195,7 +195,7 @@ const SessionsPage = () => {
                     />
                   ))
                 ) : (
-                  <div className="col-span-full text-center py-12">
+                  <div className="col-span-full text-center py-12 bg-joip-card/50 rounded-lg border border-joip-border">
                     <p className="text-muted-foreground">No favorite sessions found.</p>
                   </div>
                 )}
@@ -217,7 +217,12 @@ const SessionsPage = () => {
             transition: selectedSession.transition,
             isPublic: selectedSession.is_public
           }}
-          onPlaySession={handlePlaySession}
+          onPlaySession={() => {
+            if (selectedSession.id) {
+              navigate(`/session/${selectedSession.id}`);
+            }
+            setShareDialogOpen(false);
+          }}
         />
       )}
     </PageLayout>

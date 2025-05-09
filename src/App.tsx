@@ -7,7 +7,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { ThemeProvider } from "@/hooks/use-theme";
 import AuthGuard from "./components/layout/AuthGuard";
-import MediaBrowserPage from "./pages/SlideshowPage";
+import MediaBrowserPage from "./pages/MediaBrowserPage";
 import SessionsPage from "./pages/sessions/SessionsPage";
 import CreateSessionPage from "./pages/sessions/CreateSessionPage";
 import EditSessionPage from "./pages/sessions/EditSessionPage";
