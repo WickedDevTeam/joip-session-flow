@@ -69,6 +69,7 @@ const MediaBrowserPage = () => {
     <PageLayout>
       <div className="container py-8 px-4 sm:px-6">
         <h1 className="section-header">Media Browser</h1>
+        <p className="section-description">Browse and select media for your sessions</p>
         
         <MasonryGrid columns={4}>
           {items.map((item) => (
@@ -85,7 +86,12 @@ const MediaBrowserPage = () => {
           ref={loaderRef} 
           className="w-full h-20 flex items-center justify-center mt-6"
         >
-          {loading && <div className="loading">Loading more items...</div>}
+          {loading && (
+            <div className="loading flex items-center justify-center">
+              <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-joip-yellow"></div>
+              <span className="ml-2 text-muted-foreground">Loading more items...</span>
+            </div>
+          )}
         </div>
       </div>
     </PageLayout>

@@ -11,7 +11,7 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import { useLocation, useNavigate } from 'react-router-dom';
-import { ArrowLeft, LogOut, Settings, Play } from 'lucide-react';
+import { ArrowLeft, LogOut, Settings, Play, Image } from 'lucide-react';
 import { useAuth } from '@/hooks/use-auth';
 
 const JoipLogo = () => (
@@ -70,9 +70,9 @@ const Header: React.FC<HeaderProps> = ({ showBackButton = false, title }) => {
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end" className="bg-joip-card border-joip-border">
               <DropdownMenuItem asChild className="cursor-pointer hover:bg-white/5">
-                <Link to="/slideshow" className="flex gap-2 items-center">
-                  <Play className="h-4 w-4" />
-                  <span>Slideshow</span>
+                <Link to="/media" className="flex gap-2 items-center">
+                  <Image className="h-4 w-4" />
+                  <span>Media Browser</span>
                 </Link>
               </DropdownMenuItem>
               <DropdownMenuItem asChild className="cursor-pointer hover:bg-white/5">

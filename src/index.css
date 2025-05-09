@@ -86,6 +86,14 @@
     -ms-overflow-style: none;  /* IE and Edge */
     scrollbar-width: none;  /* Firefox */
   }
+  
+  h1, h2, h3, h4, h5, h6 {
+    @apply font-semibold text-white;
+  }
+  
+  a {
+    @apply transition-colors;
+  }
 }
 
 /* Custom button styling to match mockups */
@@ -119,4 +127,40 @@
 
 .icon-button {
   @apply p-2 rounded-full hover:bg-white/10 transition-colors;
+}
+
+/* Loading animations */
+.loading-spinner {
+  @apply animate-spin rounded-full h-5 w-5 border-2 border-b-transparent border-joip-yellow;
+}
+
+/* Form styling */
+.form-label {
+  @apply block text-sm font-medium text-white mb-1;
+}
+
+.form-input {
+  @apply block w-full rounded-md bg-joip-dark border-joip-border text-white;
+}
+
+/* Card hover effects */
+.hover-card {
+  @apply transition-all duration-200 hover:border-joip-yellow/50 hover:shadow-md hover:shadow-joip-yellow/10;
+}
+
+/* Custom scrollbar for browsers that support it */
+.custom-scrollbar::-webkit-scrollbar {
+  @apply w-2;
+}
+
+.custom-scrollbar::-webkit-scrollbar-track {
+  @apply bg-joip-darker;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  @apply bg-joip-border rounded-full;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb:hover {
+  @apply bg-white/20;
 }
