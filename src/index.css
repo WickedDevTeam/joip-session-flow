@@ -37,13 +37,13 @@
   }
 
   .dark {
-    --background: 0 0% 7%;
+    --background: 0 0% 0%;
     --foreground: 210 40% 98%;
 
-    --card: 0 0% 10%;
+    --card: 0 0% 4%;
     --card-foreground: 210 40% 98%;
 
-    --popover: 0 0% 7%;
+    --popover: 0 0% 0%;
     --popover-foreground: 210 40% 98%;
 
     --primary: 262 83% 58%;
@@ -73,7 +73,7 @@
   }
 
   body {
-    @apply bg-joip-darker text-foreground dark;
+    @apply bg-black text-foreground dark;
   }
 
   /* Hide scrollbar for Chrome, Safari and Opera */
@@ -98,19 +98,19 @@
 
 /* Custom button styling to match mockups */
 .btn-primary {
-  @apply bg-joip-accent text-white hover:bg-joip-accent/90 shadow-sm hover:shadow-glow transition-all;
+  @apply bg-joip-accent text-white hover:bg-joip-accent/90 shadow-sm transition-all;
 }
 
 .btn-secondary {
-  @apply bg-transparent border border-joip-border text-white hover:bg-white/5 transition-colors;
+  @apply bg-transparent border-0 text-white hover:bg-black/20 transition-colors;
 }
 
 .card-content {
-  @apply bg-joip-card border border-joip-border rounded-lg overflow-hidden shadow-card;
+  @apply bg-black/30 rounded-lg overflow-hidden;
 }
 
 .tag-pill {
-  @apply inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-secondary/60 text-secondary-foreground hover:bg-secondary/80 transition-colors;
+  @apply inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-black/20 text-gray-300 hover:bg-black/40 transition-colors;
 }
 
 .section-header {
@@ -118,20 +118,20 @@
 }
 
 .section-description {
-  @apply text-muted-foreground mb-8;
+  @apply text-gray-400 mb-8;
 }
 
 .tab-active {
-  @apply bg-accent text-white;
+  @apply bg-black/30 text-white;
 }
 
 .icon-button {
-  @apply p-2 rounded-full hover:bg-white/10 transition-colors;
+  @apply p-2 rounded-full hover:bg-black/20 transition-colors;
 }
 
 /* Loading animations */
 .loading-spinner {
-  @apply animate-spin rounded-full h-5 w-5 border-2 border-b-transparent border-joip-accent;
+  @apply animate-spin rounded-full h-5 w-5 border-2 border-b-transparent border-gray-400;
 }
 
 /* Form styling */
@@ -140,12 +140,12 @@
 }
 
 .form-input {
-  @apply block w-full rounded-md bg-joip-dark border-joip-border text-white;
+  @apply block w-full rounded-md bg-black/20 border-0 text-white;
 }
 
 /* Card hover effects */
 .hover-card {
-  @apply transition-all duration-200 hover:border-accent/50 hover:shadow-md hover:shadow-accent/10;
+  @apply transition-all duration-200 hover:bg-black/40;
 }
 
 /* Custom scrollbar for browsers that support it */
@@ -154,15 +154,15 @@
 }
 
 .custom-scrollbar::-webkit-scrollbar-track {
-  @apply bg-joip-darker;
+  @apply bg-black;
 }
 
 .custom-scrollbar::-webkit-scrollbar-thumb {
-  @apply bg-joip-border rounded-full;
+  @apply bg-gray-700 rounded-full;
 }
 
 .custom-scrollbar::-webkit-scrollbar-thumb:hover {
-  @apply bg-white/20;
+  @apply bg-gray-600;
 }
 
 /* Transitions and animations */
@@ -186,7 +186,7 @@
 
 /* Enhanced card styling */
 .card-elevated {
-  @apply bg-joip-card border border-joip-border shadow-card hover:shadow-glow transition-all duration-300;
+  @apply bg-black/30 shadow-sm hover:bg-black/40 transition-all duration-300;
 }
 
 /* Improved typography */
@@ -199,7 +199,7 @@
 }
 
 .text-body {
-  @apply text-sm leading-6 text-gray-200;
+  @apply text-sm leading-6 text-gray-300;
 }
 
 .text-caption {

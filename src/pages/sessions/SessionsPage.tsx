@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import PageLayout from '@/components/layout/PageLayout';
@@ -98,111 +99,114 @@ const SessionsPage = () => {
   
   return (
     <PageLayout>
-      <div className="container py-10 px-4 sm:px-6">
+      <div className="py-10 px-4 sm:px-6">
         <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-8 gap-4">
           <div>
-            <h1 className="text-3xl font-bold section-header">Your Sessions</h1>
-            <p className="text-muted-foreground">Create and manage your JOIP sessions</p>
+            <h1 className="text-3xl font-bold text-white">Your Sessions</h1>
+            <p className="text-gray-400">Create and manage your JOIP sessions</p>
           </div>
           <Button 
             onClick={() => navigate('/sessions/new')} 
-            className="bg-joip-accent hover:bg-joip-accent/90 text-white shrink-0 shadow-sm hover:shadow-glow transition-all"
+            variant="ghost"
+            className="bg-black/30 hover:bg-black/50 text-white"
           >
             <Plus className="mr-2 h-4 w-4" /> New Session
           </Button>
         </div>
         
-        <div className="relative mb-6">
-          <Search className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
-          <Input
-            placeholder="Search sessions..."
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-            className="pl-9 max-w-md bg-joip-dark border-joip-border rounded-lg"
-          />
+        <div className="bg-black/30 rounded-lg p-4">
+          <div className="relative mb-6">
+            <Search className="absolute left-3 top-2.5 h-4 w-4 text-gray-400" />
+            <Input
+              placeholder="Search sessions..."
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              className="pl-9 bg-black/20 border-0 text-white"
+            />
+          </div>
+          
+          <Tabs defaultValue="all" onValueChange={setActiveTab} className="mb-8">
+            <TabsList className="bg-black/20 border-0 p-1 rounded-full">
+              <TabsTrigger value="all">All Sessions</TabsTrigger>
+              <TabsTrigger value="favorites">Favorites</TabsTrigger>
+              <TabsTrigger value="shared" disabled>Shared with me (0)</TabsTrigger>
+            </TabsList>
+            
+            <TabsContent value="all" className="mt-8">
+              {loading ? (
+                <div className="text-center py-12">
+                  <div className="loading-spinner mx-auto mb-3"></div>
+                  <p className="text-gray-400">Loading sessions...</p>
+                </div>
+              ) : (
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                  {filteredSessions.length > 0 ? (
+                    filteredSessions.map(session => (
+                      <SessionCard
+                        key={session.id}
+                        id={session.id || ''}
+                        title={session.title}
+                        thumbnail={session.thumbnail || '/placeholder.svg'}
+                        isFavorite={session.is_favorite}
+                        lastUpdated={new Date(session.updated_at || Date.now()).toLocaleDateString()}
+                        subreddits={session.subreddits}
+                        interval={`${session.interval}s`}
+                        transition={session.transition}
+                        onToggleFavorite={handleToggleFavorite}
+                        onDelete={handleDelete}
+                        onShare={handleShare}
+                      />
+                    ))
+                  ) : (
+                    <div className="col-span-full text-center py-12 bg-black/20 rounded-lg">
+                      <p className="text-gray-400">No sessions found. Create your first session!</p>
+                      <Button 
+                        onClick={() => navigate('/sessions/new')} 
+                        className="bg-black/30 hover:bg-black/50 text-white mt-4"
+                      >
+                        <Plus className="mr-2 h-4 w-4" /> New Session
+                      </Button>
+                    </div>
+                  )}
+                </div>
+              )}
+            </TabsContent>
+            
+            <TabsContent value="favorites" className="mt-8">
+              {loading ? (
+                <div className="text-center py-12">
+                  <div className="loading-spinner mx-auto mb-3"></div>
+                  <p className="text-gray-400">Loading sessions...</p>
+                </div>
+              ) : (
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                  {filteredSessions.length > 0 ? (
+                    filteredSessions.map(session => (
+                      <SessionCard
+                        key={session.id}
+                        id={session.id || ''}
+                        title={session.title}
+                        thumbnail={session.thumbnail || '/placeholder.svg'}
+                        isFavorite={session.is_favorite}
+                        lastUpdated={new Date(session.updated_at || Date.now()).toLocaleDateString()}
+                        subreddits={session.subreddits}
+                        interval={`${session.interval}s`}
+                        transition={session.transition}
+                        onToggleFavorite={handleToggleFavorite}
+                        onDelete={handleDelete}
+                        onShare={handleShare}
+                      />
+                    ))
+                  ) : (
+                    <div className="col-span-full text-center py-12 bg-black/20 rounded-lg">
+                      <p className="text-gray-400">No favorite sessions found.</p>
+                    </div>
+                  )}
+                </div>
+              )}
+            </TabsContent>
+          </Tabs>
         </div>
-        
-        <Tabs defaultValue="all" onValueChange={setActiveTab} className="mb-8">
-          <TabsList className="bg-joip-dark border border-joip-border/50 p-1 rounded-full">
-            <TabsTrigger value="all" className="rounded-full px-4 data-[state=active]:bg-joip-accent data-[state=active]:text-white">All Sessions</TabsTrigger>
-            <TabsTrigger value="favorites" className="rounded-full px-4 data-[state=active]:bg-joip-accent data-[state=active]:text-white">Favorites</TabsTrigger>
-            <TabsTrigger value="shared" disabled className="rounded-full px-4 data-[state=active]:bg-joip-accent data-[state=active]:text-white">Shared with me (0)</TabsTrigger>
-          </TabsList>
-          
-          <TabsContent value="all" className="mt-8">
-            {loading ? (
-              <div className="text-center py-12">
-                <div className="loading-spinner mx-auto mb-3"></div>
-                <p className="text-muted-foreground">Loading sessions...</p>
-              </div>
-            ) : (
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                {filteredSessions.length > 0 ? (
-                  filteredSessions.map(session => (
-                    <SessionCard
-                      key={session.id}
-                      id={session.id || ''}
-                      title={session.title}
-                      thumbnail={session.thumbnail || '/placeholder.svg'}
-                      isFavorite={session.is_favorite}
-                      lastUpdated={new Date(session.updated_at || Date.now()).toLocaleDateString()}
-                      subreddits={session.subreddits}
-                      interval={`${session.interval}s`}
-                      transition={session.transition}
-                      onToggleFavorite={handleToggleFavorite}
-                      onDelete={handleDelete}
-                      onShare={handleShare}
-                    />
-                  ))
-                ) : (
-                  <div className="col-span-full text-center py-12 bg-joip-card/50 rounded-lg border border-joip-border">
-                    <p className="text-muted-foreground">No sessions found. Create your first session!</p>
-                    <Button 
-                      onClick={() => navigate('/sessions/new')} 
-                      className="bg-joip-accent hover:bg-joip-accent/90 text-white mt-4"
-                    >
-                      <Plus className="mr-2 h-4 w-4" /> New Session
-                    </Button>
-                  </div>
-                )}
-              </div>
-            )}
-          </TabsContent>
-          
-          <TabsContent value="favorites" className="mt-8">
-            {loading ? (
-              <div className="text-center py-12">
-                <div className="loading-spinner mx-auto mb-3"></div>
-                <p className="text-muted-foreground">Loading sessions...</p>
-              </div>
-            ) : (
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                {filteredSessions.length > 0 ? (
-                  filteredSessions.map(session => (
-                    <SessionCard
-                      key={session.id}
-                      id={session.id || ''}
-                      title={session.title}
-                      thumbnail={session.thumbnail || '/placeholder.svg'}
-                      isFavorite={session.is_favorite}
-                      lastUpdated={new Date(session.updated_at || Date.now()).toLocaleDateString()}
-                      subreddits={session.subreddits}
-                      interval={`${session.interval}s`}
-                      transition={session.transition}
-                      onToggleFavorite={handleToggleFavorite}
-                      onDelete={handleDelete}
-                      onShare={handleShare}
-                    />
-                  ))
-                ) : (
-                  <div className="col-span-full text-center py-12 bg-joip-card/50 rounded-lg border border-joip-border">
-                    <p className="text-muted-foreground">No favorite sessions found.</p>
-                  </div>
-                )}
-              </div>
-            )}
-          </TabsContent>
-        </Tabs>
       </div>
       
       {selectedSession && (

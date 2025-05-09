@@ -9,7 +9,7 @@ interface MasonryGridProps {
 
 const MasonryGrid: React.FC<MasonryGridProps> = ({ 
   children,
-  columns = 3,
+  columns = 2,
   gap = 4
 }) => {
   const childrenArray = React.Children.toArray(children);
@@ -25,7 +25,7 @@ const MasonryGrid: React.FC<MasonryGridProps> = ({
   });
 
   return (
-    <div className={`grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-${columns} gap-${gap} animate-fade-in`}>
+    <div className={`grid grid-cols-1 sm:grid-cols-2 gap-${gap}`}>
       {columnContents.map((columnItems, columnIndex) => (
         <div key={`column-${columnIndex}`} className="flex flex-col">
           {columnItems}
