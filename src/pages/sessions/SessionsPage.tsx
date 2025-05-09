@@ -15,7 +15,7 @@ const mockSessions = [
     id: '1',
     title: 'Brett Cooper',
     thumbnail: 'https://picsum.photos/id/237/400/500',
-    isFavorite: true,
+    isFavorite: false,
     lastUpdated: 'May 5, 2023',
     subreddits: ['BrettCooperSFW', 'BrettCooper'],
     interval: '10s',
@@ -25,7 +25,7 @@ const mockSessions = [
     id: '2',
     title: 'Selena',
     thumbnail: 'https://picsum.photos/id/238/400/400',
-    isFavorite: false,
+    isFavorite: true,
     lastUpdated: 'May 5, 2023',
     subreddits: ['SelenaGomezLust', 'SelenaGomezHot', 'SelenaGomez'],
     interval: '6s',
@@ -96,7 +96,7 @@ const SessionsPage = () => {
             <h1 className="text-3xl font-bold">Your Sessions</h1>
             <p className="text-muted-foreground">Create and manage your JOIP sessions</p>
           </div>
-          <Button onClick={() => navigate('/sessions/new')} className="shrink-0">
+          <Button onClick={() => navigate('/sessions/new')} className="shrink-0 bg-white text-black hover:bg-white/90">
             <Plus className="mr-2 h-4 w-4" /> New Session
           </Button>
         </div>
@@ -106,15 +106,15 @@ const SessionsPage = () => {
             placeholder="Search sessions..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            className="max-w-md"
+            className="max-w-md bg-joip-dark border-border/50"
           />
         </div>
         
         <Tabs defaultValue="all" onValueChange={setActiveTab} className="mb-8">
-          <TabsList>
-            <TabsTrigger value="all">All Sessions</TabsTrigger>
-            <TabsTrigger value="favorites">Favorites</TabsTrigger>
-            <TabsTrigger value="shared" disabled>Shared with me (0)</TabsTrigger>
+          <TabsList className="bg-joip-dark border border-border/50">
+            <TabsTrigger value="all" className="data-[state=active]:bg-joip-yellow data-[state=active]:text-black">All Sessions</TabsTrigger>
+            <TabsTrigger value="favorites" className="data-[state=active]:bg-joip-yellow data-[state=active]:text-black">Favorites</TabsTrigger>
+            <TabsTrigger value="shared" disabled className="data-[state=active]:bg-joip-yellow data-[state=active]:text-black">Shared with me (0)</TabsTrigger>
           </TabsList>
           
           <TabsContent value="all" className="mt-6">

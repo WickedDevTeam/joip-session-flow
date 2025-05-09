@@ -1,10 +1,10 @@
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { Button } from '@/components/ui/button';
-import { Play, Pause } from 'lucide-react';
+import { Play, Pause, History } from 'lucide-react';
 
 interface SessionPlayerProps {
-  sessionId: string;
+  id?: string;
   title: string;
   images: string[];
   interval: number; // in seconds
@@ -13,7 +13,7 @@ interface SessionPlayerProps {
 }
 
 const SessionPlayer: React.FC<SessionPlayerProps> = ({
-  sessionId,
+  id,
   title,
   images,
   interval,
@@ -33,22 +33,26 @@ const SessionPlayer: React.FC<SessionPlayerProps> = ({
     "Slow down. I want you to last longer. Much longer...",
   ];
   
+  const advanceSlide = useCallback(() => {
+    if (currentIndex < images.length - 1) {
+      setCurrentIndex(prev => prev + 1);
+      setCaption(mockCaptions[currentIndex % mockCaptions.length]);
+    } else {
+      // Loop back to the first image
+      setCurrentIndex(0);
+      setCaption(mockCaptions[0]);
+    }
+  }, [currentIndex, images.length, mockCaptions]);
+  
   useEffect(() => {
     if (isPaused) return;
     
     const timer = setTimeout(() => {
-      if (currentIndex < images.length - 1) {
-        setCurrentIndex(prev => prev + 1);
-        setCaption(mockCaptions[currentIndex % mockCaptions.length]);
-      } else {
-        // Loop back to the first image
-        setCurrentIndex(0);
-        setCaption(mockCaptions[0]);
-      }
+      advanceSlide();
     }, interval * 1000);
     
     return () => clearTimeout(timer);
-  }, [currentIndex, interval, images.length, isPaused, mockCaptions]);
+  }, [currentIndex, interval, isPaused, advanceSlide]);
   
   // Set initial caption
   useEffect(() => {
@@ -60,35 +64,28 @@ const SessionPlayer: React.FC<SessionPlayerProps> = ({
   };
   
   return (
-    <div className="flex flex-col lg:flex-row h-[calc(100vh-3.5rem)]">
-      {/* Left panel - Image */}
-      <div className="flex-1 bg-black relative">
-        <img 
-          src={images[currentIndex]} 
-          alt={`Slide ${currentIndex + 1}`}
-          className="h-full w-full object-contain"
-        />
-      </div>
-      
-      {/* Right panel - Text */}
-      <div className="w-full lg:w-1/3 bg-joip-dark flex flex-col">
-        <div className="flex-1 p-8 flex items-center justify-center">
-          <div className="text-2xl font-medium text-white">{caption}</div>
+    <div className="flex flex-col h-[calc(100vh-3.5rem)]">
+      <div className="flex-1 flex">
+        {/* Left panel - Image */}
+        <div className="w-full bg-black relative">
+          <img 
+            src={images[currentIndex]} 
+            alt={`Slide ${currentIndex + 1}`}
+            className="h-full w-full object-contain"
+          />
         </div>
         
-        <div className="p-4 flex justify-center">
-          <Button 
-            size="lg" 
-            className="w-32"
-            onClick={togglePause}
-          >
-            {isPaused ? (
-              <><Play className="mr-2 h-5 w-5" /> Resume</>
-            ) : (
-              <><Pause className="mr-2 h-5 w-5" /> Pause</>
-            )}
-          </Button>
+        {/* Right panel - Text */}
+        <div className="w-1/3 bg-joip-dark flex flex-col hidden lg:flex">
+          <div className="flex-1 p-8 flex items-center justify-center">
+            <div className="text-2xl font-medium text-white">{caption}</div>
+          </div>
         </div>
+      </div>
+      
+      {/* Mobile text panel (shown only on small screens) */}
+      <div className="block lg:hidden bg-joip-dark p-4">
+        <div className="text-xl font-medium text-white text-center">{caption}</div>
       </div>
     </div>
   );
