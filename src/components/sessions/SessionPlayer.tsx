@@ -2,6 +2,11 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { Button } from '@/components/ui/button';
 import { Play, Pause, History } from 'lucide-react';
+import { 
+  ResizablePanelGroup,
+  ResizablePanel,
+  ResizableHandle
+} from '@/components/ui/resizable';
 
 interface SessionPlayerProps {
   id?: string;
@@ -65,26 +70,35 @@ const SessionPlayer: React.FC<SessionPlayerProps> = ({
   
   return (
     <div className="flex flex-col h-[calc(100vh-3.5rem)]">
-      <div className="flex-1 flex">
+      {/* Main content - Resizable panels */}
+      <ResizablePanelGroup
+        direction="horizontal"
+        className="flex-1 rounded-lg h-full"
+      >
         {/* Left panel - Image */}
-        <div className="w-full bg-black relative">
-          <img 
-            src={images[currentIndex]} 
-            alt={`Slide ${currentIndex + 1}`}
-            className="h-full w-full object-contain"
-          />
-        </div>
+        <ResizablePanel defaultSize={65} minSize={30} className="bg-black">
+          <div className="h-full w-full relative">
+            <img 
+              src={images[currentIndex]} 
+              alt={`Session media ${currentIndex + 1}`}
+              className="h-full w-full object-contain"
+            />
+          </div>
+        </ResizablePanel>
+        
+        {/* Resizable handle */}
+        <ResizableHandle withHandle className="bg-[#222222] border-none" />
         
         {/* Right panel - Text */}
-        <div className="w-1/3 bg-[#121212] flex flex-col hidden lg:flex">
-          <div className="flex-1 p-8 flex items-center justify-center">
+        <ResizablePanel defaultSize={35} minSize={25} className="bg-[#121212]">
+          <div className="h-full flex items-center justify-center p-8">
             <div className="text-2xl font-medium text-white">{caption}</div>
           </div>
-        </div>
-      </div>
+        </ResizablePanel>
+      </ResizablePanelGroup>
       
-      {/* Mobile text panel (shown only on small screens) */}
-      <div className="block lg:hidden bg-[#121212] p-4">
+      {/* Mobile fallback layout - show stacked on small screens */}
+      <div className="block md:hidden bg-[#121212] p-4">
         <div className="text-xl font-medium text-white text-center">{caption}</div>
       </div>
     </div>

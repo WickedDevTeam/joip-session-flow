@@ -25,7 +25,7 @@ const generateMockItems = (count: number) => {
   }));
 };
 
-const SlideshowPage = () => {
+const MediaBrowserPage = () => {
   const [items, setItems] = useState(generateMockItems(12));
   const [loading, setLoading] = useState(false);
   const loaderRef = useRef<HTMLDivElement>(null);
@@ -68,7 +68,7 @@ const SlideshowPage = () => {
   return (
     <PageLayout>
       <div className="container py-8 px-4 sm:px-6">
-        <h1 className="text-3xl font-bold mb-8">Slideshow</h1>
+        <h1 className="text-3xl font-bold mb-8">Media Browser</h1>
         
         <MasonryGrid columns={4}>
           {items.map((item) => (
@@ -92,4 +92,4 @@ const SlideshowPage = () => {
   );
 };
 
-export default SlideshowPage;
+export default MediaBrowserPage;

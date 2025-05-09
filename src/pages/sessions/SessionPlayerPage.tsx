@@ -1,7 +1,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-import { Pause, History } from 'lucide-react';
+import { Pause, Play, History } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import PageLayout from '@/components/layout/PageLayout';
 import SessionPlayer from '@/components/sessions/SessionPlayer';
@@ -20,7 +20,7 @@ const mockSessions = {
     ],
     interval: 10,
     transition: 'fade',
-    aiPrompt: 'You are a witty commentator for a Joip AI slideshow. Given an image or post from Reddit, provide a short, insightful, and sometimes humorous caption. Keep it concise (2-3 sentences maximum) and engaging.'
+    aiPrompt: 'You are a dominant female giving instructions to submissive male users. Provide teasing, instructional captions for each image shown, describing what they should do to pleasure or punish themselves. Keep it immersive, provocative and commanding in tone.'
   },
   '2': {
     id: '2',
@@ -34,7 +34,7 @@ const mockSessions = {
     ],
     interval: 6,
     transition: 'fade',
-    aiPrompt: 'You are a witty commentator for a Joip AI slideshow. Given an image or post from Reddit, provide a short, insightful, and sometimes humorous caption. Keep it concise (2-3 sentences maximum) and engaging.'
+    aiPrompt: 'You are a dominant female giving instructions to submissive male users. Provide teasing, instructional captions for each image shown, describing what they should do to pleasure or punish themselves. Keep it immersive, provocative and commanding in tone.'
   }
 };
 
@@ -86,7 +86,7 @@ const SessionPlayerPage = () => {
   return (
     <div className="h-screen flex flex-col bg-joip-darker">
       {/* Custom header for the session player */}
-      <header className="h-14 border-b border-border/40 bg-joip-dark px-4 flex items-center justify-between">
+      <header className="h-14 border-b border-border/40 bg-black px-4 flex items-center justify-between">
         <div className="flex items-center gap-2">
           <Button 
             variant="ghost" 
@@ -99,8 +99,10 @@ const SessionPlayerPage = () => {
               <path d="M19 12H5"/>
             </svg>
           </Button>
-          <div className="text-joip-yellow font-bold text-2xl">⚡Joip</div>
-          <span className="ml-2 text-lg font-medium text-white">{session.title}</span>
+          <div className="flex items-center">
+            <div className="text-joip-yellow font-bold text-2xl mr-2">⚡Joip</div>
+            <span className="text-lg font-medium text-white">{session.title}</span>
+          </div>
         </div>
         
         <div className="flex items-center gap-4">
@@ -110,7 +112,11 @@ const SessionPlayerPage = () => {
             className="text-white" 
             onClick={togglePause}
           >
-            <Pause className="h-5 w-5" />
+            {isPaused ? (
+              <Play className="h-5 w-5" />
+            ) : (
+              <Pause className="h-5 w-5" />
+            )}
           </Button>
           
           <Button 

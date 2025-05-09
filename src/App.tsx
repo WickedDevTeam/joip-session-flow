@@ -5,7 +5,7 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Index from "./pages/Index";
-import SlideshowPage from "./pages/SlideshowPage";
+import MediaBrowserPage from "./pages/SlideshowPage";
 import SessionsPage from "./pages/sessions/SessionsPage";
 import CreateSessionPage from "./pages/sessions/CreateSessionPage";
 import EditSessionPage from "./pages/sessions/EditSessionPage";
@@ -24,7 +24,7 @@ const App = () => (
       <BrowserRouter>
         <Routes>
           <Route path="/" element={<Index />} />
-          <Route path="/slideshow" element={<SlideshowPage />} />
+          <Route path="/media" element={<MediaBrowserPage />} />
           <Route path="/sessions" element={<SessionsPage />} />
           <Route path="/sessions/new" element={<CreateSessionPage />} />
           <Route path="/sessions/edit/:id" element={<EditSessionPage />} />
