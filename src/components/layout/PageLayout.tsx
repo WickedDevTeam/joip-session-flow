@@ -1,7 +1,8 @@
 
 import React, { ReactNode } from 'react';
 import Header from './Header';
-import AgeVerification from './AgeVerification';
+// Import is kept but component will not be rendered
+// import AgeVerification from './AgeVerification';
 
 interface PageLayoutProps {
   children: ReactNode;
@@ -16,7 +17,7 @@ const PageLayout: React.FC<PageLayoutProps> = ({
 }) => {
   return (
     <div className="min-h-screen flex flex-col">
-      <AgeVerification />
+      {/* AgeVerification component temporarily disabled */}
       <Header showBackButton={showBackButton} title={title} />
       <main className="flex-grow">
         {children}

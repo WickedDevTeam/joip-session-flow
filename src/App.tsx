@@ -4,10 +4,9 @@ import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { ThemeProvider } from "@/hooks/use-theme";
 import AuthGuard from "./components/layout/AuthGuard";
-import Index from "./pages/Index";
 import MediaBrowserPage from "./pages/SlideshowPage";
 import SessionsPage from "./pages/sessions/SessionsPage";
 import CreateSessionPage from "./pages/sessions/CreateSessionPage";
@@ -26,11 +25,11 @@ const App = () => {
       <ThemeProvider defaultTheme="dark">
         <Toaster />
         <Sonner />
-        <BrowserRouter>
-          <TooltipProvider>
+        <TooltipProvider>
+          <BrowserRouter>
             <AuthGuard>
               <Routes>
-                <Route path="/" element={<Index />} />
+                <Route path="/" element={<Navigate to="/sessions" replace />} />
                 <Route path="/auth" element={<AuthPage />} />
                 <Route path="/media" element={<MediaBrowserPage />} />
                 <Route path="/sessions" element={<SessionsPage />} />
@@ -42,8 +41,8 @@ const App = () => {
                 <Route path="*" element={<NotFound />} />
               </Routes>
             </AuthGuard>
-          </TooltipProvider>
-        </BrowserRouter>
+          </BrowserRouter>
+        </TooltipProvider>
       </ThemeProvider>
     </QueryClientProvider>
   );
