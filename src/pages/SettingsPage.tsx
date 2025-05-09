@@ -5,18 +5,25 @@ import { Switch } from '@/components/ui/switch';
 import { Label } from '@/components/ui/label';
 import { Button } from '@/components/ui/button';
 import { toast } from '@/components/ui/use-toast';
+import { useTheme } from '@/hooks/use-theme';
 
 const SettingsPage = () => {
   const [showNsfw, setShowNsfw] = useState(true);
   const [enableNotifications, setEnableNotifications] = useState(false);
   const [autoplayVideos, setAutoplayVideos] = useState(true);
-  const [darkMode, setDarkMode] = useState(true);
+  
+  const { theme, setTheme } = useTheme();
+  const isDarkMode = theme === 'dark';
   
   const handleSaveSettings = () => {
     toast({
       title: 'Settings saved',
       description: 'Your preferences have been updated.',
     });
+  };
+  
+  const handleDarkModeChange = (checked: boolean) => {
+    setTheme(checked ? 'dark' : 'light');
   };
   
   return (
@@ -72,8 +79,8 @@ const SettingsPage = () => {
                 </div>
                 <Switch
                   id="dark-mode"
-                  checked={darkMode}
-                  onCheckedChange={setDarkMode}
+                  checked={isDarkMode}
+                  onCheckedChange={handleDarkModeChange}
                 />
               </div>
               

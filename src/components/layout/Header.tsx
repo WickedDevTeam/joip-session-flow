@@ -13,12 +13,18 @@ import {
 import { useLocation, useNavigate } from 'react-router-dom';
 import { ArrowLeft, LogOut, Settings, Play, Image } from 'lucide-react';
 import { useAuth } from '@/hooks/use-auth';
+import { useTheme } from '@/hooks/use-theme';
 
-const JoipLogo = () => (
-  <Link to="/" className="flex items-center gap-1">
-    <div className="text-joip-yellow font-bold text-2xl">⚡Joip</div>
-  </Link>
-);
+const JoipLogo = () => {
+  const { theme } = useTheme();
+  const logoTextClass = theme === 'dark' ? 'text-white' : 'text-gray-900';
+  
+  return (
+    <Link to="/" className="flex items-center gap-1">
+      <div className={`${logoTextClass} font-bold text-2xl`}>⚡Joip</div>
+    </Link>
+  );
+};
 
 interface HeaderProps {
   showBackButton?: boolean;

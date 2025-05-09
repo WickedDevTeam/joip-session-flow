@@ -26,8 +26,8 @@ export default {
 				background: 'hsl(var(--background))',
 				foreground: 'hsl(var(--foreground))',
 				joip: {
-					yellow: '#F0B90B',
-					orange: '#F0980B',
+					accent: '#8B5CF6', // Replace yellow with purple accent
+					orange: '#9b87f5', // Replace orange with lighter purple
 					dark: '#121212',
 					darker: '#0A0A0A',
 					card: '#1A1A1A',
@@ -109,7 +109,7 @@ export default {
 				'fade-in': 'fade-in 0.3s ease-out',
 			},
 			boxShadow: {
-				'glow': '0 0 10px rgba(240, 185, 11, 0.3)',
+				'glow': '0 0 10px rgba(139, 92, 246, 0.3)',
 				'card': '0 4px 6px -1px rgba(0, 0, 0, 0.2), 0 2px 4px -1px rgba(0, 0, 0, 0.1)',
 			},
 		}

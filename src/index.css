@@ -14,7 +14,7 @@
     --popover: 0 0% 100%;
     --popover-foreground: 222.2 84% 4.9%;
 
-    --primary: 47 91% 55%;
+    --primary: 262 83% 58%;
     --primary-foreground: 222.2 47.4% 11.2%;
 
     --secondary: 210 40% 96.1%;
@@ -23,7 +23,7 @@
     --muted: 210 40% 96.1%;
     --muted-foreground: 215.4 16.3% 46.9%;
 
-    --accent: 210 40% 96.1%;
+    --accent: 262 83% 58%;
     --accent-foreground: 222.2 47.4% 11.2%;
 
     --destructive: 0 84.2% 60.2%;
@@ -46,7 +46,7 @@
     --popover: 0 0% 4%;
     --popover-foreground: 210 40% 98%;
 
-    --primary: 47 91% 55%;
+    --primary: 262 83% 58%;
     --primary-foreground: 222.2 47.4% 11.2%;
 
     --secondary: 217.2 32.6% 17.5%;
@@ -55,7 +55,7 @@
     --muted: 217.2 32.6% 17.5%;
     --muted-foreground: 215 20.2% 65.1%;
 
-    --accent: 47 91% 55%;
+    --accent: 262 83% 58%;
     --accent-foreground: 0 0% 4%;
 
     --destructive: 0 62.8% 30.6%;
@@ -122,7 +122,7 @@
 }
 
 .tab-active {
-  @apply bg-joip-yellow text-black;
+  @apply bg-accent text-black;
 }
 
 .icon-button {
@@ -131,7 +131,7 @@
 
 /* Loading animations */
 .loading-spinner {
-  @apply animate-spin rounded-full h-5 w-5 border-2 border-b-transparent border-joip-yellow;
+  @apply animate-spin rounded-full h-5 w-5 border-2 border-b-transparent border-joip-accent;
 }
 
 /* Form styling */
@@ -145,7 +145,7 @@
 
 /* Card hover effects */
 .hover-card {
-  @apply transition-all duration-200 hover:border-joip-yellow/50 hover:shadow-md hover:shadow-joip-yellow/10;
+  @apply transition-all duration-200 hover:border-accent/50 hover:shadow-md hover:shadow-accent/10;
 }
 
 /* Custom scrollbar for browsers that support it */
