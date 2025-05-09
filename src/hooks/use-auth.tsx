@@ -12,6 +12,7 @@ export const useAuth = () => {
     // Set up auth state listener first
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
       (event, currentSession) => {
+        console.log("Auth state changed:", event, Boolean(currentSession));
         setSession(currentSession);
         setUser(currentSession?.user ?? null);
         setLoading(false);
@@ -20,6 +21,7 @@ export const useAuth = () => {
 
     // Check for existing session
     supabase.auth.getSession().then(({ data: { session: currentSession } }) => {
+      console.log("Initial session check:", Boolean(currentSession));
       setSession(currentSession);
       setUser(currentSession?.user ?? null);
       setLoading(false);
@@ -39,6 +41,7 @@ export const useAuth = () => {
       
       return { success: true };
     } catch (error: any) {
+      console.error("Sign in error:", error);
       return { 
         success: false, 
         error: error.message || 'Failed to sign in'
@@ -57,6 +60,7 @@ export const useAuth = () => {
       
       return { success: true };
     } catch (error: any) {
+      console.error("Sign up error:", error);
       return { 
         success: false, 
         error: error.message || 'Failed to sign up'
@@ -72,6 +76,7 @@ export const useAuth = () => {
       
       return { success: true };
     } catch (error: any) {
+      console.error("Sign out error:", error);
       return { 
         success: false, 
         error: error.message || 'Failed to sign out'

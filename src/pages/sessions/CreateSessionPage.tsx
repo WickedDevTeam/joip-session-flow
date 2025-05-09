@@ -10,11 +10,15 @@ import { useEffect } from 'react';
 
 const CreateSessionPage = () => {
   const navigate = useNavigate();
-  const { isAuthenticated } = useAuth();
+  const { isAuthenticated, loading } = useAuth();
   
   // Redirect to auth if not authenticated
   useEffect(() => {
+    // Only redirect after authentication check is complete
+    if (loading) return;
+    
     if (!isAuthenticated) {
+      console.log("CreateSessionPage: Not authenticated, redirecting");
       toast({
         title: 'Authentication required',
         description: 'You need to be signed in to create a session.',
@@ -22,9 +26,26 @@ const CreateSessionPage = () => {
       });
       navigate('/auth');
     }
-  }, [isAuthenticated, navigate]);
+  }, [isAuthenticated, loading, navigate]);
+  
+  // Show loading state while checking authentication
+  if (loading) {
+    return (
+      <PageLayout title="Create Session" showBackButton>
+        <div className="container flex justify-center items-center py-20">
+          <p className="text-muted-foreground">Checking authentication...</p>
+        </div>
+      </PageLayout>
+    );
+  }
+  
+  // If not authenticated, don't render the form
+  if (!isAuthenticated) {
+    return null; // We're redirecting anyway
+  }
   
   const handleSubmit = async (data: any) => {
+    // We already checked authentication above, but double-check
     if (!isAuthenticated) {
       toast({
         title: 'Authentication required',
@@ -48,16 +69,25 @@ const CreateSessionPage = () => {
       is_public: data.isPublic,
     };
     
-    // Save to database
-    const newSession = await createSession(sessionData);
-    
-    if (newSession) {
-      toast({
-        title: 'Session created',
-        description: `"${data.title}" has been created successfully.`,
-      });
+    try {
+      // Save to database
+      const newSession = await createSession(sessionData);
       
-      navigate('/sessions');
+      if (newSession) {
+        toast({
+          title: 'Session created',
+          description: `"${data.title}" has been created successfully.`,
+        });
+        
+        navigate('/sessions');
+      }
+    } catch (error) {
+      console.error("Error creating session:", error);
+      toast({
+        title: 'Error creating session',
+        description: 'There was a problem creating your session. Please try again.',
+        variant: 'destructive',
+      });
     }
   };
   
