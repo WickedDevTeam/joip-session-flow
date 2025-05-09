@@ -38,10 +38,9 @@ export function useRedditMedia(subreddits: string[], limit: number = 25, enabled
     enabled: enabled && hasToken === true && subreddits.length > 0,
     staleTime: 5 * 60 * 1000, // 5 minutes
     refetchOnWindowFocus: false,
-    // Replace onError with the correct React Query v5 API
-    onSettled: (_, error) => {
-      if (error) {
-        setError((error as Error)?.message || 'Failed to fetch media from Reddit');
+    meta: {
+      onError: (error: Error) => {
+        setError(error?.message || 'Failed to fetch media from Reddit');
       }
     }
   });
